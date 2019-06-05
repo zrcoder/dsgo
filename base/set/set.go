@@ -1,6 +1,6 @@
 package set
 
-import . "code.huawei.com/interest/dsGo"
+import . "github.com/zrcoder/dsGo"
 
 type Set map[Any]Empty
 
