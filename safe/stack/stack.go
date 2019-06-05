@@ -1,8 +1,8 @@
 package stack
  
 import (
-	. "code.huawei.com/interest/dsGo"
-	base "code.huawei.com/interest/dsGo/base/stack"
+	. "github.com/zrcoder/dsGo"
+	base "github.com/zrcoder/dsGo/base/stack"
 	"sync"
 )
  
