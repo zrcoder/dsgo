@@ -36,9 +36,9 @@ func (s *Set) Delete(item Any) {
 	s.lock.Unlock()
 }
  
-func (s *Set) Exist(item Any) bool {
+func (s *Set) Has(item Any) bool {
 	s.lock.RLock()
-	exist := s.set.Exist(item)
+	exist := s.set.Has(item)
 	s.lock.RUnlock()
 	return exist
 }
