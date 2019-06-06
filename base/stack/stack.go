@@ -21,13 +21,14 @@ type Stack struct {
 func New() *Stack {
 	return &Stack{}
 }
- 
+
+// Add a new element to the top
 func (s *Stack) Push(item Any) {
 	s.peek = &stackItem{item: item, next: s.peek}
 	s.depth ++
 }
  
-// Deletes top of a stack and returns it
+// Remove the element from the top and returns it
 func (s *Stack) Pop() Any {
 	if s.depth == 0 {
 		return nil
@@ -38,7 +39,7 @@ func (s *Stack) Pop() Any {
 	return item
 }
  
-// returns top of a stack without deletion
+// Returns the element from the top without deletion
 func (s *Stack) Peek() Any {
 	if s.depth == 0 {
 		return nil
