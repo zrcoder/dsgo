@@ -20,7 +20,7 @@ func (s Set) Delete(item Any) {
 	delete(s, item)
 }
 
-func (s Set) Exist(item Any) bool {
+func (s Set) Has(item Any) bool {
 	_, ok := s[item]
 	return ok
 }
