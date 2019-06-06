@@ -1,5 +1,5 @@
 # dsGo
-data structues impletioned with Go
+data structures impletioned with Go
 ### `base` or `safe`?
 we give 2 versions of each data structrue, thread safe or not safe, api is just the same. for example:
 ```
