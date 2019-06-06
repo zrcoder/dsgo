@@ -1,3 +1,6 @@
+/*
+	A set can store unique values, without any particular order.
+*/
 package set
  
 import (
