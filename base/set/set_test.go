@@ -13,11 +13,11 @@ func Test(t *testing.T) {
 	set.Add(100)
 	set.Add(100)
 	set.Add(200)
-	if set.Exist(300) {
-		t.Error("something wrong with func Exist()")
+	if set.Has(300) {
+		t.Error("something wrong with func Has()")
 	}
-	if !set.Exist(200) {
-		t.Error("something wrong with func Exist()")
+	if !set.Has(200) {
+		t.Error("something wrong with func Has()")
 	}
 	set.Delete(100)
 	set.Delete(555)
