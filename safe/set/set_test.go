@@ -16,11 +16,11 @@ func TestBase(t *testing.T) {
 	set.Add(100)
 	set.Add(100)
 	set.Add(200)
-	if set.Exist(300) {
-		t.Error("something wrong with func Exist()")
+	if set.Has(300) {
+		t.Error("something wrong with func Has()")
 	}
-	if !set.Exist(200) {
-		t.Error("something wrong with func Exist()")
+	if !set.Has(200) {
+		t.Error("something wrong with func Has()")
 	}
 	set.Delete(100)
 	set.Delete(555)
@@ -55,7 +55,7 @@ func TestSafe(t *testing.T) {
 	if set.Count() != max-1 {
 		t.Errorf("length is %d, expected %d\n", set.Count(), max-1)
 	}
-	if set.Exist(itemToDel) {
+	if set.Has(itemToDel) {
 		t.Errorf("the item %d exists, expected not exsit", itemToDel)
 	}
 	t.Log(set.AllItems())
@@ -66,6 +66,6 @@ func Benchmark(b *testing.B) {
  
 	for i := 0; i < b.N; i++ {
 		go set.Add(i)
-		go set.Exist(i)
+		go set.Has(i)
 	}
 }
