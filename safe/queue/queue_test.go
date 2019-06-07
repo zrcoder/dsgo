@@ -3,6 +3,7 @@ package queue
 import (
 	"testing"
 	"sync"
+	"container/list"
 )
 
 func TestBase(t *testing.T) {
@@ -22,15 +23,15 @@ func TestBase(t *testing.T) {
 func TestSafe(t *testing.T) {
 	queue := New()
 	const total = 10
-	inSequence := make([]int, total)
-	outSequencd := make([]int, total)
+		inSequence := list.List{}
+		outSequence := list.List{}
 
 	wg := sync.WaitGroup{}
 	wg.Add(total)
 	for i := 0; i < total; i++ {
 		go func(item int) {
 			queue.Enqueue(item)
-			inSequence = append(inSequence, item)
+			inSequence.PushBack(item)
 			wg.Done()
 		}(i)
 	}
@@ -40,25 +41,56 @@ func TestSafe(t *testing.T) {
 	for i := 0; i < total; i++ {
 		go func() {
 			item := queue.Dequeue()
-			outSequencd = append(outSequencd, item.(int))
+			outSequence.PushBack(item)
 			wg.Done()
 		}()
 	}
 	wg.Wait()
 
 	for i := 0; i < total; i++ {
-		if inSequence[i] != outSequencd[total-i-1] {
+		inItem := inSequence.Front()
+		outItem := outSequence.Front()
+		if inItem.Value != outItem.Value {
 			t.Error("failed")
 		}
+		inSequence.Remove(inItem)
+		outSequence.Remove(outItem)
 	}
 }
 
-func Benchmark(b *testing.B) {
+func Benchmark1(b *testing.B) {
 	queue := New()
-	for i := 0; i < b.N; i++ {
-		queue.Enqueue(i)
+	wg := sync.WaitGroup{}
+	total := b.N
+	wg.Add(total)
+	for i := 0; i < total; i++ {
+		go func(item int) {
+			queue.Enqueue(item)
+			queue.Dequeue()
+			wg.Done()
+		}(i)
 	}
+	wg.Wait()
+}
+
+func Benchmark2(b *testing.B) {
+	queue := New()
+	wg := sync.WaitGroup{}
+	wg.Add(b.N)
 	for i := 0; i < b.N; i++ {
-		queue.Dequeue()
+		go func(item int) {
+			queue.Enqueue(item)
+			wg.Done()
+		}(i)
 	}
+	wg.Wait()
+
+	wg.Add(b.N)
+	for i := 0; i < b.N; i++ {
+		go func() {
+			queue.Dequeue()
+			wg.Done()
+		}()
+	}
+	wg.Wait()
 }

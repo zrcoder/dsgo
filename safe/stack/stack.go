@@ -22,14 +22,14 @@ func New() *Stack {
 	return &Stack{stack: base.New()}
 }
 
-// add a new element to the top
+// Add a new element to the top
 func (s *Stack) Push(item Any) {
 	s.lock.Lock()
 	s.stack.Push(item)
 	s.lock.Unlock()
 }
  
-// remove the element from the top and returns it
+// Remove the element from the top and returns it
 func (s *Stack) Pop() Any {
 	s.lock.Lock()
 	item := s.stack.Pop()
@@ -37,7 +37,7 @@ func (s *Stack) Pop() Any {
 	return item
 }
  
-// returns the element from the top without deletion
+// Returns the element from the top without deletion
 func (s *Stack) Peek() Any {
 	s.lock.RLock()
 	item := s.stack.Peek()

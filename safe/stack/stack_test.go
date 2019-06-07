@@ -3,6 +3,7 @@ package stack
 import (
 	"testing"
 	"sync"
+	"container/list"
 )
  
 func Test(t *testing.T) {
@@ -22,15 +23,15 @@ func Test(t *testing.T) {
 func TestSafe(t *testing.T) {
 	stack := New()
 	const total = 10
-	pushed := make([]int, total)
-	poped := make([]int, total)
+	pushed := list.New()
+	poped := list.New()
  
 	wg := sync.WaitGroup{}
 	wg.Add(total)
 	for i := 0; i < total; i++ {
 		go func(i int) {
 			stack.Push(i)
-			pushed = append(pushed, i)
+			pushed.PushBack(i)
 			wg.Done()
 		}(i)
 	}
@@ -40,14 +41,16 @@ func TestSafe(t *testing.T) {
 	for i := 0; i < total; i++ {
 		go func() {
 			item := stack.Pop()
-			poped = append(poped, item.(int))
+			poped.PushBack(item)
 			wg.Done()
 		}()
 	}
 	wg.Wait()
  
 	for i:=0; i< total; i++ {
-		if pushed[i] != poped[total-i-1] {
+		pushedItem := pushed.Front()
+		popedItem := poped.Back()
+		if pushedItem.Value != popedItem.Value {
 			t.Error("failed")
 		}
 	}
@@ -55,10 +58,12 @@ func TestSafe(t *testing.T) {
  
 func Benchmark(b *testing.B) {
 	stack := New()
+	wg := sync.WaitGroup{}
+	wg.Add(b.N)
 	for i := 0; i < b.N; i++ {
-		stack.Push(i)
+		go stack.Push(i)
+		go stack.Pop()
+		wg.Done()
 	}
-	for i := b.N - 1; i > -1; i-- {
-		stack.Pop()
-	}
+	wg.Wait()
 }

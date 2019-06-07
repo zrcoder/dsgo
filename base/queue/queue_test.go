@@ -16,7 +16,7 @@ func Test(t *testing.T) {
 	}
 }
 
-func BenchmarkDequeue(b *testing.B) {
+func Benchmark(b *testing.B) {
 	queue := New()
 	for i := 0; i < b.N; i++ {
 		queue.Enqueue(i)

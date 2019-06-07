@@ -4,7 +4,7 @@
 */
 package queue
 
-import . "code.huawei.com/interest/dsGo"
+import . "github.com/zrcoder/dsGo"
 
 type queueItem struct {
 	item Any
@@ -23,14 +23,12 @@ func New() *Queen {
 
 // Put a given item into the queue
 func (q *Queen) Enqueue(item Any) {
+	newItem := &queueItem{item: item}
 	if q.depth == 0 {
-		q.head = &queueItem{item: item, next: nil}
-		q.tail = q.head
-		q.depth ++
-		return
+		q.head = newItem
+	} else {
+		q.tail.next = newItem
 	}
-	newItem := &queueItem{item: item, next: nil}
-	q.tail.next = newItem
 	q.tail = newItem
 	q.depth ++
 }

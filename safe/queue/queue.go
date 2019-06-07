@@ -7,8 +7,8 @@ package queue
 import (
 	"sync"
 
-	. "code.huawei.com/interest/dsGo"
-	base "code.huawei.com/interest/dsGo/base/queue"
+	. "github.com/zrcoder/dsGo"
+	base "github.com/zrcoder/dsGo/base/queue"
 )
 
 type Queen struct {

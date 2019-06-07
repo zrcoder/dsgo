@@ -33,7 +33,7 @@ func (s Set) Count() int {
 }
 
 func (s Set) AllItems() []Any {
-	r := make([]Any, s.Count())
+	var r []Any
 	for k := range s {
 		r = append(r, k)
 	}
