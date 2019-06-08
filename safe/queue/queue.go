@@ -13,24 +13,24 @@ import (
 
 type Queen struct {
 	sync.Mutex
-	queue *base.Queen
+	inner *base.Queen
 }
 
 func New() *Queen {
-	return &Queen{queue: base.New()}
+	return &Queen{inner: base.New()}
 }
 
 // put a given item into the queue
 func (q *Queen) Enqueue(item Any) {
 	q.Lock()
-	q.queue.Enqueue(item)
+	q.inner.Enqueue(item)
 	q.Unlock()
 }
 
 // remove the first item from the queue and returns it
 func (q *Queen) Dequeue() Any {
 	q.Lock()
-	item := q.queue.Dequeue()
+	item := q.inner.Dequeue()
 	q.Unlock()
 	return item
 }

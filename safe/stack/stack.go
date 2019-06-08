@@ -15,24 +15,24 @@ import (
  
 type Stack struct {
 	lock  sync.RWMutex
-	stack *base.Stack
+	inner *base.Stack
 }
  
 func New() *Stack {
-	return &Stack{stack: base.New()}
+	return &Stack{inner: base.New()}
 }
 
 // Add a new element to the top
 func (s *Stack) Push(item Any) {
 	s.lock.Lock()
-	s.stack.Push(item)
+	s.inner.Push(item)
 	s.lock.Unlock()
 }
  
 // Remove the element from the top and returns it
 func (s *Stack) Pop() Any {
 	s.lock.Lock()
-	item := s.stack.Pop()
+	item := s.inner.Pop()
 	s.lock.Unlock()
 	return item
 }
@@ -40,7 +40,7 @@ func (s *Stack) Pop() Any {
 // Returns the element from the top without deletion
 func (s *Stack) Peek() Any {
 	s.lock.RLock()
-	item := s.stack.Peek()
+	item := s.inner.Peek()
 	s.lock.RUnlock()
 	return item
 }

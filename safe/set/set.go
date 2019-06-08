@@ -12,50 +12,50 @@ import (
  
 type Set struct {
 	lock sync.RWMutex
-	set  base.Set
+	inner  base.Set
 }
  
 func New() *Set {
 	s := &Set{}
-	s.set = base.New()
+	s.inner = base.New()
 	return s
 }
  
 func NewWithCapacity(c int) *Set {
 	s := &Set{}
-	s.set = base.NewWithCapacity(c)
+	s.inner = base.NewWithCapacity(c)
 	return s
 }
  
 func (s *Set) Add(item Any) {
 	s.lock.Lock()
-	s.set.Add(item)
+	s.inner.Add(item)
 	s.lock.Unlock()
 }
  
 func (s *Set) Delete(item Any) {
 	s.lock.Lock()
-	s.set.Delete(item)
+	s.inner.Delete(item)
 	s.lock.Unlock()
 }
  
 func (s *Set) Has(item Any) bool {
 	s.lock.RLock()
-	exist := s.set.Has(item)
+	exist := s.inner.Has(item)
 	s.lock.RUnlock()
 	return exist
 }
  
 func (s *Set) Count() int {
 	s.lock.RLock()
-	length := s.set.Count()
+	length := s.inner.Count()
 	s.lock.RUnlock()
 	return length
 }
  
 func (s *Set) AllItems() []Any {
 	s.lock.RLock()
-	items := s.set.AllItems()
+	items := s.inner.AllItems()
 	s.lock.RUnlock()
 	return items
 }
