@@ -24,3 +24,7 @@ A stack gives you a LIFO or last-in first-out order.
 ```
 A set can store unique values, without any particular order.
 ```
+[bit set](base/bitset)
+```
+BitSet is a fixed-size sequence of n bits.
+```
