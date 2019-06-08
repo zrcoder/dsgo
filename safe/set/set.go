@@ -46,9 +46,9 @@ func (s *Set) Has(item Any) bool {
 	return exist
 }
  
-func (s *Set) Count() int {
+func (s *Set) Size() int {
 	s.lock.RLock()
-	length := s.inner.Count()
+	length := s.inner.Size()
 	s.lock.RUnlock()
 	return length
 }

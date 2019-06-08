@@ -7,8 +7,8 @@ func Test(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		set.Add(i)
 	}
-	if set.Count() != 10 {
-		t.Error("something wrong with func Count()")
+	if set.Size() != 10 {
+		t.Error("something wrong with func Size()")
 	}
 	set.Add(100)
 	set.Add(100)
@@ -21,11 +21,11 @@ func Test(t *testing.T) {
 	}
 	set.Delete(100)
 	set.Delete(555)
-	if set.Count() != 11 {
-		t.Error("something wrong with func Count()")
+	if set.Size() != 11 {
+		t.Error("something wrong with func Size()")
 	}
-	if len(set.AllItems()) != set.Count() {
-		t.Error("len(set.AllItems()) != set.Count()")
+	if len(set.AllItems()) != set.Size() {
+		t.Error("len(set.AllItems()) != set.Size()")
 	}
 }
  

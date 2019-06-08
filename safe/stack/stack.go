@@ -12,7 +12,7 @@ import (
 	. "github.com/zrcoder/dsGo"
 	base "github.com/zrcoder/dsGo/base/stack"
 )
- 
+
 type Stack struct {
 	lock  sync.RWMutex
 	inner *base.Stack

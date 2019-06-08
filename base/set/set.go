@@ -28,14 +28,16 @@ func (s Set) Has(item Any) bool {
 	return ok
 }
 
-func (s Set) Count() int {
+func (s Set) Size() int {
 	return len(s)
 }
 
 func (s Set) AllItems() []Any {
-	var r []Any
-	for k := range s {
-		r = append(r, k)
+	r := make([]Any, s.Size())
+	i := 0
+	for key := range s {
+		r[i] = key
+		i ++
 	}
 	return r
 }
