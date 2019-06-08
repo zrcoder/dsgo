@@ -26,5 +26,5 @@ A set can store unique values, without any particular order.
 ```
 [bit set](base/bitset)
 ```
-BitSet is a fixed-size sequence of n bits.
+Bit set is a fixed-size sequence of n bits.
 ```
