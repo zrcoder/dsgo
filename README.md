@@ -1,15 +1,15 @@
 # dsGo
-data structures impletioned with Go
+Data structures impletioned with Go
 ### `base` or `safe`?
 we give 2 versions of each data structrue, thread safe or not safe, api is just the same. for example:
 ```
-// this is a base set
+// a base set
 github.com/zrcoder/dsGo/base/set
 
 // a thread safe set
 github.com/zrcoder/dsGo/safe/set
 ```
-the base version usually performances better than the safe version <br>
+the base version usually performances better than the safe one <br>
 and the safe version usually used for concurrent scenes
 ### our data structures
 [queue](base/queue)
@@ -27,4 +27,21 @@ A set can store unique values, without any particular order.
 [bit set](base/bitset)
 ```
 Bit set is a fixed-size sequence of n bits.
+```
+### data structures in standard library
+sync.Map
+```
+thread safe hash map
+```
+container/list.List
+```
+A doubly linked list
+```
+container/heap
+```
+A heap is a tree with the property that each node is the minimum-valued node in its subtree.
+```
+container/ring.Ring
+```
+A ring is an element of a circular list, or ring.
 ```
