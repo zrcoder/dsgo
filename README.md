@@ -31,7 +31,7 @@ Bit set is a fixed-size sequence of n bits.
 ### data structures in standard library
 sync.Map
 ```
-thread safe hash map
+A thread safe hash map
 ```
 container/list.List
 ```
