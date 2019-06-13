@@ -51,6 +51,8 @@ func TestSafe(t *testing.T) {
 	}
 
 	wg.Wait()
+	
+	set.Delete(itemToDel)
 
 	if set.Size() != max-1 || len(set.AllItems()) != max-1 {
 		t.Errorf("length is %d, expected %d\n", set.Size(), max-1)
