@@ -41,3 +41,11 @@ func (s Set) AllItems() []Any {
 	}
 	return r
 }
+
+func (s Set) Range(f func(item Any) bool) {
+	for key := range s {
+		if f(key) {
+			return
+		}
+	}
+}
