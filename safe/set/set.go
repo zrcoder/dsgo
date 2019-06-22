@@ -59,3 +59,9 @@ func (s *Set) AllItems() []Any {
 	s.lock.RUnlock()
 	return items
 }
+
+func (s *Set) Range(f func(item Any) bool)  {
+	s.lock.Lock()
+	s.inner.Range(f)
+	s.lock.Unlock()
+}
