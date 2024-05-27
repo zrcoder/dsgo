@@ -3,11 +3,11 @@ package set
 import "testing"
 
 func Test(t *testing.T) {
-	set := New()
+	set := New[int]()
 	for i := 0; i < 10; i++ {
 		set.Add(i)
 	}
-	t.Log(set.AllItems())
+	t.Log(set.Values())
 	if set.Size() != 10 {
 		t.Error("something wrong with func Size()")
 	}
@@ -25,13 +25,13 @@ func Test(t *testing.T) {
 	if set.Size() != 11 {
 		t.Error("something wrong with func Size()")
 	}
-	if len(set.AllItems()) != set.Size() {
+	if len(set.Values()) != set.Size() {
 		t.Error("len(set.AllItems()) != set.Size()")
 	}
 }
 
 func Benchmark(b *testing.B) {
-	set := NewWithCapacity(b.N)
+	set := NewWithCapacity[int](b.N)
 	for i := 0; i < b.N; i++ {
 		set.Add(i)
 	}

@@ -1,38 +1,64 @@
 package heap
 
+import (
+	"cmp"
+
+	"github.com/zrcoder/dsgo"
+)
+
+type Option[T comparable] func(h *Heap[T])
+
+func WithComparator[T comparable](cmp dsgo.Comparator[T]) Option[T] {
+	return func(h *Heap[T]) {
+		h.cmp = cmp
+	}
+}
+
+func WithCapacity[T comparable](capacity int) Option[T] {
+	return func(h *Heap[T]) {
+		if capacity <= cap(h.data) {
+			h.data = h.data[:len(h.data):len(h.data)]
+		} else {
+			data := make([]T, len(h.data), capacity)
+			copy(data, h.data)
+			h.data = data
+		}
+	}
+}
+
+func WithData[T comparable, S ~[]T](data S) Option[T] {
+	return func(h *Heap[T]) {
+		if cap(h.data) < len(data) {
+			h.data = make([]T, len(data))
+		} else {
+			h.data = h.data[:len(data)]
+		}
+		copy(h.data, data)
+	}
+}
+
 type Heap[T comparable] struct {
-	cmp  Comparator
+	cmp  dsgo.Comparator[T]
 	data []T
 	idx  map[T]int
 	cnt  map[T]int
 	size int
 }
 
-type Comparator func(a, b any) bool
-
-const DefaultCapacity = 64
-
-func New[T comparable](cmp Comparator) *Heap[T] {
-	return NewWithCap[T](DefaultCapacity, cmp)
+func New[T cmp.Ordered](ops ...Option[T]) *Heap[T] {
+	return NewWith[T](dsgo.OrderedComparator[T](), ops...)
 }
 
-func NewWithCap[T comparable](cap int, cmp Comparator) *Heap[T] {
-	return &Heap[T]{
-		data: make([]T, 0, cap),
-		idx:  make(map[T]int),
-		cnt:  make(map[T]int),
-		cmp:  cmp,
-	}
-}
-
-func Build[T comparable, S ~[]T](data S, cmp Comparator) *Heap[T] {
+func NewWith[T comparable](cmp dsgo.Comparator[T], ops ...Option[T]) *Heap[T] {
 	res := &Heap[T]{
-		data: data,
-		idx:  make(map[T]int),
-		cnt:  make(map[T]int),
-		cmp:  cmp,
-		size: len(data),
+		idx: make(map[T]int),
+		cnt: make(map[T]int),
+		cmp: cmp,
 	}
+	for _, op := range ops {
+		op(res)
+	}
+	res.size = len(res.data)
 	res.build()
 	return res
 }
@@ -72,23 +98,17 @@ func (h *Heap[T]) Pop() T {
 		return x
 	}
 	res := h.data[0]
-	if h.cnt[res] == 1 {
-		last := len(h.data) - 1
-		h.swap(0, last)
-		h.down(0, last)
-		var zero T
-		h.data[last] = zero // // avoid memory leak if T is pointer
-		h.data = h.data[:last]
-		h.idx[res] = -1 // for safety
-	}
-	h.cnt[res]--
-	h.size--
+	h.Remove(res)
 	return res
 }
 
 // Peek returns the peek value of the heap
 // The complexity is O(1)
 func (h *Heap[T]) Peek() T {
+	if h.size == 0 {
+		var x T
+		return x
+	}
 	return h.data[0]
 }
 
@@ -98,11 +118,11 @@ func (h *Heap[T]) Len() int {
 	return h.size
 }
 
-// Remove removes and returns any element from the heap.
+// Remove removes any element from the heap.
 // The complexity is O(log n) where n = h.Len().
-func (h *Heap[T]) Remove(x T) T {
+func (h *Heap[T]) Remove(x T) {
 	if h.cnt[x] == 0 {
-		return x
+		return
 	}
 	if h.cnt[x] == 1 {
 		i := h.idx[x]
@@ -116,11 +136,10 @@ func (h *Heap[T]) Remove(x T) T {
 		var zero T
 		h.data[last] = zero // avoid memory leak if T is pointer
 		h.data = h.data[:last]
-		h.idx[x] = -1 // for safety
+		delete(h.idx, x)
 	}
 	h.size--
 	h.cnt[x]--
-	return x
 }
 
 // Update re-establishes the heap ordering after the element has changed its value.

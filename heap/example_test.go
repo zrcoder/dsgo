@@ -2,16 +2,17 @@ package heap
 
 import (
 	"fmt"
+
+	"github.com/zrcoder/dsgo"
 )
 
 func Example_ints() {
-	h := NewWithCap[int](4, func(a, b any) bool { return a.(int) < b.(int) })
+	h := New[int]()
 	h.Push(2)
 	h.Push(1)
 	h.Push(5)
 	h.Push(3)
 	fmt.Printf("minimum: %d\n", h.Peek())
-
 	for h.Len() > 0 {
 		fmt.Printf("%d ", h.Pop())
 	}
@@ -20,14 +21,29 @@ func Example_ints() {
 	// 1 2 3 5
 }
 
+func Example_withComparator() {
+	h := New(WithComparator(dsgo.OrderedComparator[int]().Reverse()))
+	h.Push(2)
+	h.Push(1)
+	h.Push(5)
+	h.Push(3)
+	fmt.Printf("maximum: %d\n", h.Peek())
+	for h.Len() > 0 {
+		fmt.Printf("%d ", h.Pop())
+	}
+	// Output:
+	// maximum: 5
+	// 5 3 2 1
+}
+
 type Item struct {
 	Name     string
 	Priority int
 }
 
 func Example_custom() {
-	h := New[*Item](func(a, b any) bool {
-		return a.(*Item).Priority > b.(*Item).Priority
+	h := NewWith(func(a, b *Item) bool {
+		return a.Priority > b.Priority
 	})
 
 	items := map[string]int{
@@ -63,9 +79,9 @@ func Example_custom() {
 	// 05:orange 04:pear 03:banana 02:apple
 }
 
-func Example_build() {
+func Example_withData() {
 	nums := []int{6, 8, 5, 9, 3}
-	h := Build(nums, func(a, b any) bool { return a.(int) < b.(int) })
+	h := New(WithData(nums), WithCapacity[int](len(nums)+1))
 	h.Push(1)
 	h.Remove(3)
 	h.Remove(100)

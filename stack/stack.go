@@ -1,48 +1,33 @@
 /*
-	A stack gives you a LIFO or last-in first-out order.
-	You can only Push to add a new element to the top of the stack,
-	Pop to remove the element from the top,
-	and Peek at the top element without poping it off.
+A stack gives you a LIFO or last-in first-out order.
+You can only Push to add a new element to the top of the stack,
+Pop to remove the element from the top,
+and Peek at the top element without poping it off.
 */
 package stack
 
-import . "github.com/zrcoder/dsGo"
+import "github.com/zrcoder/dsgo/list"
 
-type stackItem struct {
-	item Any
-	next *stackItem
+// Stack is a LIFO (last-in first-out) list
+type Stack[T any] struct {
+	*list.List[T]
 }
 
-type Stack struct {
-	peek  *stackItem
-	depth uint64
+func New[T any]() *Stack[T] {
+	return &Stack[T]{list.New[T]()}
 }
 
-func New() *Stack {
-	return &Stack{}
+// Push add a new element to the top
+func (s *Stack[T]) Push(item T) {
+	s.List.PushBack(item)
 }
 
-// Add a new element to the top
-func (s *Stack) Push(item Any) {
-	s.peek = &stackItem{item: item, next: s.peek}
-	s.depth++
+// Pop remove the element from the top and returns it
+func (s *Stack[T]) Pop() T {
+	return s.Remove(s.Back())
 }
 
-// Remove the element from the top and returns it
-func (s *Stack) Pop() Any {
-	if s.depth == 0 {
-		return nil
-	}
-	item := s.peek.item
-	s.peek = s.peek.next
-	s.depth--
-	return item
-}
-
-// Returns the element from the top without deletion
-func (s *Stack) Peek() Any {
-	if s.depth == 0 {
-		return nil
-	}
-	return s.peek.item
+// Peek returns the element from the top without deletion
+func (s *Stack[T]) Peek() T {
+	return s.Back().Value
 }

@@ -3,7 +3,7 @@ package queue
 import "testing"
 
 func Test(t *testing.T) {
-	queue := New()
+	queue := New[int]()
 	total := 10
 	for i := 0; i < total; i++ {
 		queue.Enqueue(i)
@@ -17,7 +17,7 @@ func Test(t *testing.T) {
 }
 
 func Benchmark(b *testing.B) {
-	queue := New()
+	queue := New[int]()
 	for i := 0; i < b.N; i++ {
 		queue.Enqueue(i)
 	}

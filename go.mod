@@ -1,3 +1,3 @@
-module github.com/zrcoder/dsGo
+module github.com/zrcoder/dsgo
 
 go 1.18

@@ -61,6 +61,10 @@ func New[T any]() *List[T] { return new(List[T]).Init() }
 // The complexity is O(1).
 func (l *List[T]) Len() int { return l.len }
 
+// Empty returns if the list is empty.
+// The complexity is O(1).
+func (l *List[T]) Empty() bool { return l.len == 0 }
+
 // Front returns the first element of list l or nil if the list is empty.
 func (l *List[T]) Front() *Element[T] {
 	if l.len == 0 {
@@ -228,4 +232,13 @@ func (l *List[T]) PushFrontList(other *List[T]) {
 	for i, e := other.Len(), other.Back(); i > 0; i, e = i-1, e.Prev() {
 		l.insertValue(e.Value, &l.root)
 	}
+}
+
+// Values returns the values slice in the list
+func (l *List[T]) Values() []T {
+	res := make([]T, l.len)
+	for i, e := l.Len(), l.Front(); i > 0; i, e = i-1, e.Next() {
+		res[i] = e.Value
+	}
+	return res
 }

@@ -1,45 +1,36 @@
 /*
-	A queue gives you a FIFO or first-in firs-out order.
-	The element you inserted first is also the first one to come out again.
+A queue gives you a FIFO or first-in firs-out order.
+The element you inserted first is also the first one to come out again.
 */
 package queue
 
-import . "github.com/zrcoder/dsGo"
+import (
+	"github.com/zrcoder/dsgo/list"
+)
 
-type queueItem struct {
-	item Any
-	next *queueItem
+// Queue is a FIFO (first-in first-out) list
+type Queue[T any] struct {
+	list *list.List[T]
 }
 
-type Queen struct {
-	head  *queueItem
-	tail  *queueItem
-	depth uint64
+func New[T any]() *Queue[T] {
+	return &Queue[T]{list: list.New[T]()}
 }
 
-func New() *Queen {
-	return &Queen{}
+// Enqueue puts a given item at the back of the queue
+func (q *Queue[T]) Enqueue(item T) {
+	q.list.PushBack(item)
 }
 
-// Put a given item into the queue
-func (q *Queen) Enqueue(item Any) {
-	newItem := &queueItem{item: item}
-	if q.depth == 0 {
-		q.head = newItem
-	} else {
-		q.tail.next = newItem
-	}
-	q.tail = newItem
-	q.depth++
+// Dequeue removes the first item from the queue and returns it
+func (q *Queue[T]) Dequeue() T {
+	return q.list.Remove(q.list.Front())
 }
 
-// Remove the first item from the queue and returns it
-func (q *Queen) Dequeue() Any {
-	if q.depth == 0 {
-		return nil
-	}
-	item := q.head.item
-	q.head = q.head.next
-	q.depth--
-	return item
+func (q *Queue[T]) Len() int {
+	return q.Len()
+}
+
+func (q *Queue[T]) Empty() bool {
+	return q.list.Empty()
 }

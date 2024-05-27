@@ -2,28 +2,19 @@ package set
 
 import (
 	"fmt"
-
-	. "github.com/zrcoder/dsGo"
 )
 
-func ExampleRange() {
+func Example_range() {
 	const tolal = 10
-	set := NewWithCapacity(tolal)
+	set := NewWithCapacity[int](tolal)
 	for i := 1; i <= tolal; i++ {
 		set.Add(i)
 	}
-
 	sum := 0
-	set.Range(func(item Any) bool {
-		switch v := item.(type) {
-		case int:
-			sum += v
-			return false
-		default:
-			return true
-		}
+	set.Range(func(item int) bool {
+		sum += item
+		return false
 	})
-
 	fmt.Println(sum)
 
 	// OutPut:

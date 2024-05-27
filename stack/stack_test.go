@@ -3,7 +3,7 @@ package stack
 import "testing"
 
 func Test(t *testing.T) {
-	stack := New()
+	stack := New[int]()
 	const total = 10
 	for i := 0; i < total; i++ {
 		stack.Push(i)
@@ -17,7 +17,7 @@ func Test(t *testing.T) {
 }
 
 func Benchmark(b *testing.B) {
-	stack := New()
+	stack := New[int]()
 	for i := 0; i < b.N; i++ {
 		stack.Push(i)
 	}
