@@ -12,9 +12,11 @@ func Example_ints() {
 	h.Push(1)
 	h.Push(5)
 	h.Push(3)
-	fmt.Printf("minimum: %d\n", h.Peek())
+	peek, _ := h.Peek()
+	fmt.Printf("minimum: %d\n", peek)
 	for h.Len() > 0 {
-		fmt.Printf("%d ", h.Pop())
+		cur, _ := h.Pop()
+		fmt.Printf("%d ", cur)
 	}
 	// Output:
 	// minimum: 1
@@ -27,9 +29,11 @@ func Example_withComparator() {
 	h.Push(1)
 	h.Push(5)
 	h.Push(3)
-	fmt.Printf("maximum: %d\n", h.Peek())
+	peek, _ := h.Peek()
+	fmt.Printf("maximum: %d\n", peek)
 	for h.Len() > 0 {
-		fmt.Printf("%d ", h.Pop())
+		cur, _ := h.Pop()
+		fmt.Printf("%d ", cur)
 	}
 	// Output:
 	// maximum: 5
@@ -72,7 +76,7 @@ func Example_custom() {
 	h.Push(item)
 
 	for h.Len() > 0 {
-		item := h.Pop()
+		item, _ := h.Pop()
 		fmt.Printf("%.2d:%s ", item.Priority, item.Name)
 	}
 	// Output:
@@ -86,7 +90,8 @@ func Example_withData() {
 	h.Remove(3)
 	h.Remove(100)
 	for h.Len() > 0 {
-		fmt.Print(h.Pop())
+		cur, _ := h.Pop()
+		fmt.Print(cur)
 		fmt.Print(",")
 	}
 	// Output:

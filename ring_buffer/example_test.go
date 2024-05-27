@@ -1,4 +1,4 @@
-package ringbuffer
+package ring_buffer
 
 import "fmt"
 

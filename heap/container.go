@@ -1,6 +1,7 @@
 package heap
 
 import (
+	"maps"
 	"slices"
 
 	"github.com/zrcoder/dsgo"
@@ -17,19 +18,18 @@ func (h *Heap[T]) Len() int {
 	return len(h.data)
 }
 
+// Empty returns if the heap is empty.
+// The complexity is O(1)
 func (h *Heap[T]) Empty() bool {
-	return h.size == 0
+	return h.Len() == 0
 }
 
+// Values returns the sorted values in the heap
 func (h *Heap[T]) Values() []T {
-	if !h.advanced {
-		return slices.Clone(h.data)
-	}
-	res := make([]T, 0, h.size)
-	for _, v := range h.data {
-		for n := h.cnt[v]; n > 0; n-- {
-			res = append(res, v)
-		}
+	res := make([]T, h.Len())
+	tmp := h.clone()
+	for i := range res {
+		res[i], _ = tmp.Pop()
 	}
 	return res
 }
@@ -37,4 +37,18 @@ func (h *Heap[T]) Values() []T {
 func (h *Heap[T]) Clear() {
 	clear(h.data)
 	h.data = h.data[:0]
+	clear(h.idx)
+	clear(h.cnt)
+	h.size = 0
+}
+
+func (h *Heap[T]) clone() *Heap[T] {
+	return &Heap[T]{
+		cmp:      h.cmp,
+		data:     slices.Clone(h.data),
+		idx:      maps.Clone(h.idx),
+		cnt:      maps.Clone(h.cnt),
+		size:     h.size,
+		advanced: h.advanced,
+	}
 }

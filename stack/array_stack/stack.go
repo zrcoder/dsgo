@@ -1,4 +1,4 @@
-package arraystack
+package array_stack
 
 import "github.com/zrcoder/dsgo/stack"
 

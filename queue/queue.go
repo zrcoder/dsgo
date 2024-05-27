@@ -23,6 +23,17 @@ func (q *Queue[T]) Enqueue(item T) {
 }
 
 // Dequeue removes the first item from the queue and returns it
-func (q *Queue[T]) Dequeue() T {
-	return q.list.Remove(q.list.Front())
+func (q *Queue[T]) Dequeue() (value T, ok bool) {
+	if q.Empty() {
+		return
+	}
+	return q.list.Remove(q.list.Front()), true
+}
+
+// Front returns the first item of the queue
+func (q *Queue[T]) Front() (value T, ok bool) {
+	if q.Empty() {
+		return
+	}
+	return q.list.Front().Value, true
 }

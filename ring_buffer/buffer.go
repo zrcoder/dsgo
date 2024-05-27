@@ -1,4 +1,4 @@
-package ringbuffer
+package ring_buffer
 
 // Buffer holds values in a slice.
 type Buffer[T comparable] struct {
@@ -49,9 +49,9 @@ func (b *Buffer[T]) Dequeue() (value T, ok bool) {
 	return
 }
 
-// Peek returns first element of the buffer without removing it, or nil if buffer is empty.
+// First returns first element of the buffer without removing it, or nil if buffer is empty.
 // Second return parameter is true, unless the buffer was empty and there was nothing to peek.
-func (b *Buffer[T]) Peek() (value T, ok bool) {
+func (b *Buffer[T]) First() (value T, ok bool) {
 	if b.Empty() {
 		return value, false
 	}

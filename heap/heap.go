@@ -59,9 +59,17 @@ func (h *Heap[T]) build() {
 	}
 }
 
-// Push pushes the element x onto the heap.
+// Push pushes the elements values onto the heap.
+// The complexity is O(mlog n) where m is the size of values and n is the size of the heap.
+func (h *Heap[T]) Push(values ...T) {
+	for _, value := range values {
+		h.push(value)
+	}
+}
+
+// push pushes the element x onto the heap.
 // The complexity is O(log n) where n is the size of the heap.
-func (h *Heap[T]) Push(value T) {
+func (h *Heap[T]) push(value T) {
 	n := len(h.data)
 	if h.advanced {
 		if h.cnt[value] == 0 {
@@ -80,24 +88,22 @@ func (h *Heap[T]) Push(value T) {
 // Pop removes and returns the peek element from the heap.
 // The complexity is O(log n) where n is the size of the heap.
 // Pop is equivalent to Remove(h.data[0]).
-func (h *Heap[T]) Pop() T {
+func (h *Heap[T]) Pop() (value T, ok bool) {
 	if h.Len() == 0 {
-		var x T
-		return x
+		return
 	}
-	res := h.data[0]
+	value = h.data[0]
 	h.removeIndex(0)
-	return res
+	return value, true
 }
 
 // Peek returns the peek value of the heap
 // The complexity is O(1)
-func (h *Heap[T]) Peek() T {
+func (h *Heap[T]) Peek() (value T, ok bool) {
 	if h.Len() == 0 {
-		var x T
-		return x
+		return
 	}
-	return h.data[0]
+	return h.data[0], true
 }
 
 func (h *Heap[T]) swap(i, j int) {
