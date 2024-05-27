@@ -6,43 +6,13 @@ import (
 	"github.com/zrcoder/dsgo"
 )
 
-type Option[T comparable] func(h *Heap[T])
-
-func WithComparator[T comparable](cmp dsgo.Comparator[T]) Option[T] {
-	return func(h *Heap[T]) {
-		h.cmp = cmp
-	}
-}
-
-func WithCapacity[T comparable](capacity int) Option[T] {
-	return func(h *Heap[T]) {
-		if capacity <= cap(h.data) {
-			h.data = h.data[:len(h.data):len(h.data)]
-		} else {
-			data := make([]T, len(h.data), capacity)
-			copy(data, h.data)
-			h.data = data
-		}
-	}
-}
-
-func WithData[T comparable, S ~[]T](data S) Option[T] {
-	return func(h *Heap[T]) {
-		if cap(h.data) < len(data) {
-			h.data = make([]T, len(data))
-		} else {
-			h.data = h.data[:len(data)]
-		}
-		copy(h.data, data)
-	}
-}
-
 type Heap[T comparable] struct {
-	cmp  dsgo.Comparator[T]
-	data []T
-	idx  map[T]int
-	cnt  map[T]int
-	size int
+	cmp      dsgo.Comparator[T]
+	data     []T
+	idx      map[T]int
+	cnt      map[T]int
+	size     int
+	advanced bool
 }
 
 func New[T cmp.Ordered](ops ...Option[T]) *Heap[T] {
@@ -51,14 +21,16 @@ func New[T cmp.Ordered](ops ...Option[T]) *Heap[T] {
 
 func NewWith[T comparable](cmp dsgo.Comparator[T], ops ...Option[T]) *Heap[T] {
 	res := &Heap[T]{
-		idx: make(map[T]int),
-		cnt: make(map[T]int),
 		cmp: cmp,
 	}
 	for _, op := range ops {
 		op(res)
 	}
-	res.size = len(res.data)
+	if res.advanced {
+		res.size = len(res.data)
+		res.idx = make(map[T]int)
+		res.cnt = make(map[T]int)
+	}
 	res.build()
 	return res
 }
@@ -66,106 +38,80 @@ func NewWith[T comparable](cmp dsgo.Comparator[T], ops ...Option[T]) *Heap[T] {
 // build will build the heap by the given cmp.
 // The complexity is O(n) where n is the size of the heap.
 func (h *Heap[T]) build() {
+	if h.advanced {
+		data := make([]T, 0, len(h.data))
+		for _, v := range h.data {
+			h.cnt[v]++
+			if h.cnt[v] == 1 {
+				data = append(data, v)
+			}
+		}
+		h.data = data
+	}
 	n := len(h.data)
 	for i := n/2 - 1; i >= 0; i-- {
 		h.down(i, n)
 	}
-	for i, v := range h.data {
-		h.idx[v] = i
-		h.cnt[v]++
+	if h.advanced {
+		for i, v := range h.data {
+			h.idx[v] = i
+		}
 	}
 }
 
 // Push pushes the element x onto the heap.
 // The complexity is O(log n) where n is the size of the heap.
-func (h *Heap[T]) Push(x T) {
-	if h.cnt[x] == 0 {
-		n := len(h.data)
-		h.idx[x] = n
-		h.data = append(h.data, x)
+func (h *Heap[T]) Push(value T) {
+	n := len(h.data)
+	if h.advanced {
+		if h.cnt[value] == 0 {
+			h.idx[value] = n
+			h.data = append(h.data, value)
+			h.up(n)
+		}
+		h.cnt[value]++
+		h.size++
+	} else {
+		h.data = append(h.data, value)
 		h.up(n)
 	}
-	h.cnt[x]++
-	h.size++
 }
 
 // Pop removes and returns the peek element from the heap.
 // The complexity is O(log n) where n is the size of the heap.
 // Pop is equivalent to Remove(h.data[0]).
 func (h *Heap[T]) Pop() T {
-	if h.size == 0 {
+	if h.Len() == 0 {
 		var x T
 		return x
 	}
 	res := h.data[0]
-	h.Remove(res)
+	h.removeIndex(0)
 	return res
 }
 
 // Peek returns the peek value of the heap
 // The complexity is O(1)
 func (h *Heap[T]) Peek() T {
-	if h.size == 0 {
+	if h.Len() == 0 {
 		var x T
 		return x
 	}
 	return h.data[0]
 }
 
-// Len returns the size of the heap.
-// The complexity is O(1)
-func (h *Heap[T]) Len() int {
-	return h.size
-}
-
-// Remove removes any element from the heap.
-// The complexity is O(log n) where n = h.Len().
-func (h *Heap[T]) Remove(x T) {
-	if h.cnt[x] == 0 {
-		return
-	}
-	if h.cnt[x] == 1 {
-		i := h.idx[x]
-		last := len(h.data) - 1
-		if last != i {
-			h.swap(i, last)
-			if !h.down(i, last) {
-				h.up(i)
-			}
-		}
-		var zero T
-		h.data[last] = zero // avoid memory leak if T is pointer
-		h.data = h.data[:last]
-		delete(h.idx, x)
-	}
-	h.size--
-	h.cnt[x]--
-}
-
-// Update re-establishes the heap ordering after the element has changed its value.
-// Changing the value of the element x and then calling Fix is equivalent to,
-// but less expensive than, calling Remove(x) followed by a Push of the new value.
-// The complexity is O(log n) where n = h.Len().
-func (h *Heap[T]) Update(x T) {
-	if h.cnt[x] == 0 {
-		return
-	}
-	i := h.idx[x]
-	if !h.down(i, len(h.data)) {
-		h.up(i)
-	}
-}
-
 func (h *Heap[T]) swap(i, j int) {
 	h.data[i], h.data[j] = h.data[j], h.data[i]
-	h.idx[h.data[i]] = i
-	h.idx[h.data[j]] = j
+	if h.advanced {
+		h.idx[h.data[i]] = i
+		h.idx[h.data[j]] = j
+	}
 }
 
 func (h *Heap[T]) up(i int) {
 	for {
 		parent := (i - 1) / 2
-		if i == parent || !h.cmp(h.data[i], h.data[parent]) {
+		if i == parent || h.cmp(h.data[i], h.data[parent]) >= 0 {
 			break
 		}
 		h.swap(parent, i)
@@ -181,10 +127,10 @@ func (h *Heap[T]) down(i, n int) bool {
 			break
 		}
 		right := child + 1
-		if right < n && h.cmp(h.data[right], h.data[child]) {
+		if right < n && h.cmp(h.data[right], h.data[child]) < 0 {
 			child = right
 		}
-		if !h.cmp(h.data[child], h.data[cur]) {
+		if h.cmp(h.data[child], h.data[cur]) >= 0 {
 			break
 		}
 		h.swap(cur, child)

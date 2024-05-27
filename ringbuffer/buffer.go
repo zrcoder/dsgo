@@ -1,10 +1,5 @@
 package ringbuffer
 
-import (
-	"fmt"
-	"strings"
-)
-
 // Buffer holds values in a slice.
 type Buffer[T comparable] struct {
 	values  []T
@@ -46,7 +41,6 @@ func (b *Buffer[T]) Dequeue() (value T, ok bool) {
 	if b.Empty() {
 		return value, false
 	}
-
 	value, ok = b.values[b.start], true
 	b.start = (b.start + 1) % b.maxSize
 	b.full = false
@@ -64,28 +58,9 @@ func (b *Buffer[T]) Peek() (value T, ok bool) {
 	return b.values[b.start], true
 }
 
-// Empty returns true if buffer does not contain any elements.
-func (b *Buffer[T]) Empty() bool {
-	return b.Size() == 0
-}
-
 // Full returns true if the buffer is full, i.e. has reached the maximum number of elements that it can hold.
 func (b *Buffer[T]) Full() bool {
-	return b.Size() == b.maxSize
-}
-
-// Size returns number of elements within the buffer.
-func (b *Buffer[T]) Size() int {
-	return b.size
-}
-
-// Clear removes all elements from the buffer.
-func (b *Buffer[T]) Clear() {
-	b.values = make([]T, b.maxSize)
-	b.start = 0
-	b.end = 0
-	b.full = false
-	b.size = 0
+	return b.Len() == b.maxSize
 }
 
 // Get gets the value at the given index index.
@@ -103,26 +78,6 @@ func (b *Buffer[T]) Set(index int, value T) bool {
 		return true
 	}
 	return false
-}
-
-// Values returns all elements in the buffer (FIFO order).
-func (b *Buffer[T]) Values() []T {
-	values := make([]T, b.Size())
-	for i := range values {
-		values[i] = b.values[(b.start+i)%b.maxSize]
-	}
-	return values
-}
-
-// String returns a string representation of container
-func (buffer *Buffer[T]) String() string {
-	str := "CircularBuffer\n"
-	var values []string
-	for _, value := range buffer.Values() {
-		values = append(values, fmt.Sprintf("%v", value))
-	}
-	str += strings.Join(values, ", ")
-	return str
 }
 
 // Check that the index is within bounds of the list

@@ -107,19 +107,6 @@ func (r *Ring[T]) Unlink(n int) *Ring[T] {
 	return r.Link(r.Move(n + 1))
 }
 
-// Len computes the number of elements in ring r.
-// It executes in time proportional to the number of elements.
-func (r *Ring[T]) Len() int {
-	n := 0
-	if r != nil {
-		n = 1
-		for p := r.Next(); p != r; p = p.next {
-			n++
-		}
-	}
-	return n
-}
-
 // Do calls function f on each element of the ring, in forward order.
 // The behavior of Do is undefined if f changes *r.
 func (r *Ring[T]) Do(f func(T)) {

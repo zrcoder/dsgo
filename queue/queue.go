@@ -26,11 +26,3 @@ func (q *Queue[T]) Enqueue(item T) {
 func (q *Queue[T]) Dequeue() T {
 	return q.list.Remove(q.list.Front())
 }
-
-func (q *Queue[T]) Len() int {
-	return q.Len()
-}
-
-func (q *Queue[T]) Empty() bool {
-	return q.list.Empty()
-}

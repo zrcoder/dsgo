@@ -42,9 +42,9 @@ type Item struct {
 }
 
 func Example_custom() {
-	h := NewWith(func(a, b *Item) bool {
-		return a.Priority > b.Priority
-	})
+	h := NewWith(func(a, b *Item) int {
+		return b.Priority - a.Priority
+	}, WithAdvanced[*Item]())
 
 	items := map[string]int{
 		"banana": 3, "apple": 2, "pear": 4,
@@ -81,7 +81,7 @@ func Example_custom() {
 
 func Example_withData() {
 	nums := []int{6, 8, 5, 9, 3}
-	h := New(WithData(nums), WithCapacity[int](len(nums)+1))
+	h := New(WithData(nums), WithCapacity[int](len(nums)+1), WithAdvanced[int]())
 	h.Push(1)
 	h.Remove(3)
 	h.Remove(100)

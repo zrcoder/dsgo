@@ -7,44 +7,15 @@
 //	}
 package list
 
-// element is an element of a linked list.
-type Element[T any] struct {
-	// Next and previous pointers in the doubly-linked list of elements.
-	// To simplify the implementation, internally a list l is implemented
-	// as a ring, such that &l.root is both the next element of the last
-	// list element (l.Back()) and the previous element of the first list
-	// element (l.Front()).
-	next, prev *Element[T]
-
-	// The list to which this element belongs.
-	list *List[T]
-
-	// The value stored with this Element.
-	Value T
-}
-
-// Next returns the next list element or nil.
-func (e *Element[T]) Next() *Element[T] {
-	if p := e.next; e.list != nil && p != &e.list.root {
-		return p
-	}
-	return nil
-}
-
-// Prev returns the previous list element or nil.
-func (e *Element[T]) Prev() *Element[T] {
-	if p := e.prev; e.list != nil && p != &e.list.root {
-		return p
-	}
-	return nil
-}
-
 // List represents a doubly linked list.
 // The zero value for List is an empty list ready to use.
 type List[T any] struct {
 	root Element[T] // sentinel list element, only &root, root.prev, and root.next are used
 	len  int        // current list length excluding (this) sentinel element
 }
+
+// New returns an initialized list.
+func New[T any]() *List[T] { return new(List[T]).Init() }
 
 // Init initializes or clears list l.
 func (l *List[T]) Init() *List[T] {
@@ -53,17 +24,6 @@ func (l *List[T]) Init() *List[T] {
 	l.len = 0
 	return l
 }
-
-// New returns an initialized list.
-func New[T any]() *List[T] { return new(List[T]).Init() }
-
-// Len returns the number of elements of list l.
-// The complexity is O(1).
-func (l *List[T]) Len() int { return l.len }
-
-// Empty returns if the list is empty.
-// The complexity is O(1).
-func (l *List[T]) Empty() bool { return l.len == 0 }
 
 // Front returns the first element of list l or nil if the list is empty.
 func (l *List[T]) Front() *Element[T] {
@@ -232,13 +192,4 @@ func (l *List[T]) PushFrontList(other *List[T]) {
 	for i, e := other.Len(), other.Back(); i > 0; i, e = i-1, e.Prev() {
 		l.insertValue(e.Value, &l.root)
 	}
-}
-
-// Values returns the values slice in the list
-func (l *List[T]) Values() []T {
-	res := make([]T, l.len)
-	for i, e := l.Len(), l.Front(); i > 0; i, e = i-1, e.Next() {
-		res[i] = e.Value
-	}
-	return res
 }

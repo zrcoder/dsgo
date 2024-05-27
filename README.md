@@ -30,7 +30,7 @@ Data structures for Go, with generics apis.
 
 [unionfind](unionfind/readme.md)
 
-[ring buffer](ringbuffer/ringbuffer.go)
+[ring buffer](ringbuffer/buffer.go)
 
 `Also known as a circular buffer.`
 

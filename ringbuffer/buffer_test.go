@@ -1,7 +1,6 @@
 package ringbuffer
 
 import (
-	"strings"
 	"testing"
 )
 
@@ -20,7 +19,7 @@ func TestQueueEnqueue(t *testing.T) {
 	if actualValue := queue.Empty(); actualValue != false {
 		t.Errorf("Got %v expected %v", actualValue, false)
 	}
-	if actualValue := queue.Size(); actualValue != 3 {
+	if actualValue := queue.Len(); actualValue != 3 {
 		t.Errorf("Got %v expected %v", actualValue, 3)
 	}
 	if actualValue, ok := queue.Peek(); actualValue != 1 || !ok {
@@ -52,41 +51,41 @@ func TestQueueDequeue(t *testing.T) {
 	assert(queue.Empty(), true)
 	assert(queue.Empty(), true)
 	assert(queue.Full(), false)
-	assert(queue.Size(), 0)
+	assert(queue.Len(), 0)
 	queue.Enqueue(1)
-	assert(queue.Size(), 1)
+	assert(queue.Len(), 1)
 	queue.Enqueue(2)
-	assert(queue.Size(), 2)
+	assert(queue.Len(), 2)
 
 	queue.Enqueue(3)
-	assert(queue.Size(), 3)
+	assert(queue.Len(), 3)
 	assert(queue.Empty(), false)
 	assert(queue.Full(), true)
 
 	queue.Dequeue()
-	assert(queue.Size(), 2)
+	assert(queue.Len(), 2)
 
 	if actualValue, ok := queue.Peek(); actualValue != 2 || !ok {
 		t.Errorf("Got %v expected %v", actualValue, 2)
 	}
-	assert(queue.Size(), 2)
+	assert(queue.Len(), 2)
 
 	if actualValue, ok := queue.Dequeue(); actualValue != 2 || !ok {
 		t.Errorf("Got %v expected %v", actualValue, 2)
 	}
-	assert(queue.Size(), 1)
+	assert(queue.Len(), 1)
 
 	if actualValue, ok := queue.Dequeue(); actualValue != 3 || !ok {
 		t.Errorf("Got %v expected %v", actualValue, 3)
 	}
-	assert(queue.Size(), 0)
+	assert(queue.Len(), 0)
 	assert(queue.Empty(), true)
 	assert(queue.Full(), false)
 
 	if actualValue, ok := queue.Dequeue(); actualValue != 0 || ok {
 		t.Errorf("Got %v expected %v", actualValue, nil)
 	}
-	assert(queue.Size(), 0)
+	assert(queue.Len(), 0)
 
 	assert(queue.Empty(), true)
 	assert(queue.Full(), false)
@@ -103,38 +102,38 @@ func TestQueueDequeueFull(t *testing.T) {
 	queue := New[int](2)
 	assert(queue.Empty(), true)
 	assert(queue.Full(), false)
-	assert(queue.Size(), 0)
+	assert(queue.Len(), 0)
 
 	queue.Enqueue(1)
-	assert(queue.Size(), 1)
+	assert(queue.Len(), 1)
 
 	queue.Enqueue(2)
-	assert(queue.Size(), 2)
+	assert(queue.Len(), 2)
 	assert(queue.Full(), true)
 	if actualValue, ok := queue.Peek(); actualValue != 1 || !ok {
 		t.Errorf("Got %v expected %v", actualValue, 2)
 	}
 	queue.Enqueue(3) // overwrites 1
-	assert(queue.Size(), 2)
+	assert(queue.Len(), 2)
 
 	if actualValue, ok := queue.Dequeue(); actualValue != 2 || !ok {
 		t.Errorf("Got %v expected %v", actualValue, 2)
 	}
-	if actualValue, expectedValue := queue.Size(), 1; actualValue != expectedValue {
+	if actualValue, expectedValue := queue.Len(), 1; actualValue != expectedValue {
 		t.Errorf("Got %v expected %v", actualValue, expectedValue)
 	}
 
 	if actualValue, ok := queue.Peek(); actualValue != 3 || !ok {
 		t.Errorf("Got %v expected %v", actualValue, 3)
 	}
-	if actualValue, expectedValue := queue.Size(), 1; actualValue != expectedValue {
+	if actualValue, expectedValue := queue.Len(), 1; actualValue != expectedValue {
 		t.Errorf("Got %v expected %v", actualValue, expectedValue)
 	}
 
 	if actualValue, ok := queue.Dequeue(); actualValue != 3 || !ok {
 		t.Errorf("Got %v expected %v", actualValue, 3)
 	}
-	assert(queue.Size(), 0)
+	assert(queue.Len(), 0)
 
 	if actualValue, ok := queue.Dequeue(); actualValue != 0 || ok {
 		t.Errorf("Got %v expected %v", actualValue, nil)
@@ -142,14 +141,6 @@ func TestQueueDequeueFull(t *testing.T) {
 	assert(queue.Empty(), true)
 	assert(queue.Full(), false)
 	assert(len(queue.Values()), 0)
-}
-
-func TestQueueString(t *testing.T) {
-	c := New[int](3)
-	c.Enqueue(1)
-	if !strings.HasPrefix(c.String(), "CircularBuffer") {
-		t.Errorf("String should start with container name")
-	}
 }
 
 func benchmarkEnqueue(b *testing.B, queue *Buffer[int], size int) {

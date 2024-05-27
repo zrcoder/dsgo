@@ -1,4 +1,4 @@
-package stack
+package liststack
 
 import "testing"
 
@@ -9,7 +9,7 @@ func Test(t *testing.T) {
 		stack.Push(i)
 	}
 	for i := total - 1; i > -1; i-- {
-		item := stack.Pop()
+		item, _ := stack.Pop()
 		if item != i {
 			t.Error("failed")
 		}
