@@ -21,6 +21,4 @@ func (l *List[T]) Values() []T {
 	return res
 }
 
-func (l *List[T]) Clear() {
-	l.Init()
-}
+func (l *List[T]) Clear() { l.Init() }

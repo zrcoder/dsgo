@@ -17,9 +17,7 @@ func (r *Ring[T]) Len() int {
 	return n
 }
 
-func (r *Ring[T]) Empty() bool {
-	return r.Len() == 0
-}
+func (r *Ring[T]) Empty() bool { return r.Len() == 0 }
 
 func (r *Ring[T]) Values() []T {
 	res := make([]T, r.Len())
@@ -31,6 +29,4 @@ func (r *Ring[T]) Values() []T {
 	return res
 }
 
-func (r *Ring[T]) Clear() {
-	r.init()
-}
+func (r *Ring[T]) Clear() { r.init() }

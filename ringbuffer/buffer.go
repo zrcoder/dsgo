@@ -1,4 +1,4 @@
-package ring_buffer
+package ringbuffer
 
 // Buffer holds values in a slice.
 type Buffer[T comparable] struct {

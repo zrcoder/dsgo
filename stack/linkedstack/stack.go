@@ -1,6 +1,4 @@
-package linked_stack
-
-import "github.com/zrcoder/dsgo/stack"
+package linkedstack
 
 type node[T any] struct {
 	value T
@@ -13,11 +11,7 @@ type Stack[T any] struct {
 	size int
 }
 
-var _ stack.Stack[int] = (*Stack[int])(nil)
-
-func New[T any]() *Stack[T] {
-	return &Stack[T]{}
-}
+func New[T any]() *Stack[T] { return &Stack[T]{} }
 
 // Push add a new element to the top
 func (s *Stack[T]) Push(value T) {
@@ -44,4 +38,23 @@ func (s *Stack[T]) Peek() (value T, ok bool) {
 		return
 	}
 	return s.top.value, true
+}
+
+func (s *Stack[T]) Len() int { return s.size }
+
+func (s *Stack[T]) Empty() bool { return s.size == 0 }
+
+func (s *Stack[T]) Values() []T {
+	res := make([]T, s.size)
+	p := s.top
+	for i := range res {
+		res[i] = p.value
+		p = p.next
+	}
+	return res
+}
+
+func (s *Stack[T]) Clear() {
+	s.top = nil
+	s.size = 0
 }

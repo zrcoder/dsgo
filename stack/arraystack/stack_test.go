@@ -1,4 +1,4 @@
-package linked_stack
+package arraystack
 
 import (
 	"testing"
@@ -82,7 +82,7 @@ func benchmarkPop(b *testing.B, stack *Stack[int], size int) {
 	}
 }
 
-func BenchmarkLinkedListStackPop100(b *testing.B) {
+func BenchmarkArrayStackPop100(b *testing.B) {
 	b.StopTimer()
 	size := 100
 	stack := New[int]()
@@ -93,7 +93,7 @@ func BenchmarkLinkedListStackPop100(b *testing.B) {
 	benchmarkPop(b, stack, size)
 }
 
-func BenchmarkLinkedListStackPop1000(b *testing.B) {
+func BenchmarkArrayStackPop1000(b *testing.B) {
 	b.StopTimer()
 	size := 1000
 	stack := New[int]()
@@ -104,7 +104,7 @@ func BenchmarkLinkedListStackPop1000(b *testing.B) {
 	benchmarkPop(b, stack, size)
 }
 
-func BenchmarkLinkedListStackPop10000(b *testing.B) {
+func BenchmarkArrayStackPop10000(b *testing.B) {
 	b.StopTimer()
 	size := 10000
 	stack := New[int]()
@@ -115,7 +115,7 @@ func BenchmarkLinkedListStackPop10000(b *testing.B) {
 	benchmarkPop(b, stack, size)
 }
 
-func BenchmarkLinkedListStackPop100000(b *testing.B) {
+func BenchmarkArrayStackPop100000(b *testing.B) {
 	b.StopTimer()
 	size := 100000
 	stack := New[int]()
@@ -126,7 +126,7 @@ func BenchmarkLinkedListStackPop100000(b *testing.B) {
 	benchmarkPop(b, stack, size)
 }
 
-func BenchmarkLinkedListStackPush100(b *testing.B) {
+func BenchmarkArrayStackPush100(b *testing.B) {
 	b.StopTimer()
 	size := 100
 	stack := New[int]()
@@ -134,7 +134,7 @@ func BenchmarkLinkedListStackPush100(b *testing.B) {
 	benchmarkPush(b, stack, size)
 }
 
-func BenchmarkLinkedListStackPush1000(b *testing.B) {
+func BenchmarkArrayStackPush1000(b *testing.B) {
 	b.StopTimer()
 	size := 1000
 	stack := New[int]()
@@ -145,7 +145,7 @@ func BenchmarkLinkedListStackPush1000(b *testing.B) {
 	benchmarkPush(b, stack, size)
 }
 
-func BenchmarkLinkedListStackPush10000(b *testing.B) {
+func BenchmarkArrayStackPush10000(b *testing.B) {
 	b.StopTimer()
 	size := 10000
 	stack := New[int]()
@@ -156,7 +156,7 @@ func BenchmarkLinkedListStackPush10000(b *testing.B) {
 	benchmarkPush(b, stack, size)
 }
 
-func BenchmarkLinkedListStackPush100000(b *testing.B) {
+func BenchmarkArrayStackPush100000(b *testing.B) {
 	b.StopTimer()
 	size := 100000
 	stack := New[int]()

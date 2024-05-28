@@ -1,23 +1,22 @@
-package set
+package treeset
 
 import (
+	"slices"
+	"strings"
 	"testing"
 )
 
 func TestSetNew(t *testing.T) {
-	set := New(2, 1)
-
+	set := New[int](2, 1)
 	if actualValue := set.Len(); actualValue != 2 {
 		t.Errorf("Got %v expected %v", actualValue, 2)
 	}
-	if actualValue := set.Contains(1); actualValue != true {
-		t.Errorf("Got %v expected %v", actualValue, true)
+	values := set.Values()
+	if actualValue := values[0]; actualValue != 1 {
+		t.Errorf("Got %v expected %v", actualValue, 1)
 	}
-	if actualValue := set.Contains(2); actualValue != true {
-		t.Errorf("Got %v expected %v", actualValue, true)
-	}
-	if actualValue := set.Contains(3); actualValue != false {
-		t.Errorf("Got %v expected %v", actualValue, true)
+	if actualValue := values[1]; actualValue != 2 {
+		t.Errorf("Got %v expected %v", actualValue, 2)
 	}
 }
 
@@ -34,13 +33,16 @@ func TestSetAdd(t *testing.T) {
 	if actualValue := set.Len(); actualValue != 3 {
 		t.Errorf("Got %v expected %v", actualValue, 3)
 	}
+	values := set.Values()
+	expected := []int{1, 2, 3}
+	if !slices.Equal(values, expected) {
+		t.Errorf("Got %v expected %v", values, expected)
+	}
 }
 
 func TestSetContains(t *testing.T) {
 	set := New[int]()
 	set.Add(3, 1, 2)
-	set.Add(2, 3)
-	set.Add()
 	if actualValue := set.Contains(); actualValue != true {
 		t.Errorf("Got %v expected %v", actualValue, true)
 	}
@@ -72,6 +74,19 @@ func TestSetRemove(t *testing.T) {
 	set.Remove(2)
 	if actualValue := set.Len(); actualValue != 0 {
 		t.Errorf("Got %v expected %v", actualValue, 0)
+	}
+}
+
+func TestSetChaining(t *testing.T) {
+	set := New[string]()
+	set.Add("c", "a", "b")
+}
+
+func TestSetString(t *testing.T) {
+	c := New[int]()
+	c.Add(1)
+	if !strings.HasPrefix(c.String(), "TreeSet") {
+		t.Errorf("String should start with container name")
 	}
 }
 
@@ -165,7 +180,7 @@ func benchmarkRemove(b *testing.B, set *Set[int], size int) {
 	}
 }
 
-func BenchmarkHashSetContains100(b *testing.B) {
+func BenchmarkTreeSetContains100(b *testing.B) {
 	b.StopTimer()
 	size := 100
 	set := New[int]()
@@ -176,7 +191,7 @@ func BenchmarkHashSetContains100(b *testing.B) {
 	benchmarkContains(b, set, size)
 }
 
-func BenchmarkHashSetContains1000(b *testing.B) {
+func BenchmarkTreeSetContains1000(b *testing.B) {
 	b.StopTimer()
 	size := 1000
 	set := New[int]()
@@ -187,7 +202,7 @@ func BenchmarkHashSetContains1000(b *testing.B) {
 	benchmarkContains(b, set, size)
 }
 
-func BenchmarkHashSetContains10000(b *testing.B) {
+func BenchmarkTreeSetContains10000(b *testing.B) {
 	b.StopTimer()
 	size := 10000
 	set := New[int]()
@@ -198,7 +213,7 @@ func BenchmarkHashSetContains10000(b *testing.B) {
 	benchmarkContains(b, set, size)
 }
 
-func BenchmarkHashSetContains100000(b *testing.B) {
+func BenchmarkTreeSetContains100000(b *testing.B) {
 	b.StopTimer()
 	size := 100000
 	set := New[int]()
@@ -209,7 +224,7 @@ func BenchmarkHashSetContains100000(b *testing.B) {
 	benchmarkContains(b, set, size)
 }
 
-func BenchmarkHashSetAdd100(b *testing.B) {
+func BenchmarkTreeSetAdd100(b *testing.B) {
 	b.StopTimer()
 	size := 100
 	set := New[int]()
@@ -217,7 +232,7 @@ func BenchmarkHashSetAdd100(b *testing.B) {
 	benchmarkAdd(b, set, size)
 }
 
-func BenchmarkHashSetAdd1000(b *testing.B) {
+func BenchmarkTreeSetAdd1000(b *testing.B) {
 	b.StopTimer()
 	size := 1000
 	set := New[int]()
@@ -228,7 +243,7 @@ func BenchmarkHashSetAdd1000(b *testing.B) {
 	benchmarkAdd(b, set, size)
 }
 
-func BenchmarkHashSetAdd10000(b *testing.B) {
+func BenchmarkTreeSetAdd10000(b *testing.B) {
 	b.StopTimer()
 	size := 10000
 	set := New[int]()
@@ -239,7 +254,7 @@ func BenchmarkHashSetAdd10000(b *testing.B) {
 	benchmarkAdd(b, set, size)
 }
 
-func BenchmarkHashSetAdd100000(b *testing.B) {
+func BenchmarkTreeSetAdd100000(b *testing.B) {
 	b.StopTimer()
 	size := 100000
 	set := New[int]()
@@ -250,7 +265,7 @@ func BenchmarkHashSetAdd100000(b *testing.B) {
 	benchmarkAdd(b, set, size)
 }
 
-func BenchmarkHashSetRemove100(b *testing.B) {
+func BenchmarkTreeSetRemove100(b *testing.B) {
 	b.StopTimer()
 	size := 100
 	set := New[int]()
@@ -261,7 +276,7 @@ func BenchmarkHashSetRemove100(b *testing.B) {
 	benchmarkRemove(b, set, size)
 }
 
-func BenchmarkHashSetRemove1000(b *testing.B) {
+func BenchmarkTreeSetRemove1000(b *testing.B) {
 	b.StopTimer()
 	size := 1000
 	set := New[int]()
@@ -272,7 +287,7 @@ func BenchmarkHashSetRemove1000(b *testing.B) {
 	benchmarkRemove(b, set, size)
 }
 
-func BenchmarkHashSetRemove10000(b *testing.B) {
+func BenchmarkTreeSetRemove10000(b *testing.B) {
 	b.StopTimer()
 	size := 10000
 	set := New[int]()
@@ -283,7 +298,7 @@ func BenchmarkHashSetRemove10000(b *testing.B) {
 	benchmarkRemove(b, set, size)
 }
 
-func BenchmarkHashSetRemove100000(b *testing.B) {
+func BenchmarkTreeSetRemove100000(b *testing.B) {
 	b.StopTimer()
 	size := 100000
 	set := New[int]()

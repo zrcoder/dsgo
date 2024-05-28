@@ -12,13 +12,17 @@ func WithComparator[T comparable](cmp dsgo.Comparator[T]) Option[T] {
 
 func WithCapacity[T comparable](capacity int) Option[T] {
 	return func(h *Heap[T]) {
-		if capacity <= cap(h.data) {
-			h.data = h.data[:len(h.data):len(h.data)]
-		} else {
-			data := make([]T, len(h.data), capacity)
-			copy(data, h.data)
-			h.data = data
+		if capacity <= len(h.data) {
+			h.data = h.data[:capacity:capacity]
+			return
 		}
+		if capacity <= cap(h.data) {
+			h.data = h.data[:len(h.data):capacity]
+			return
+		}
+		data := make([]T, len(h.data), capacity)
+		copy(data, h.data)
+		h.data = data
 	}
 }
 

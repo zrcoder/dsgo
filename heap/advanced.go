@@ -1,7 +1,7 @@
 package heap
 
-// Remove removes any element from the heap.
-// this method is only supported for advanced Heap, it will panics if called on a base heap.
+// Remove removes value (any element) from the heap.
+// This method is only supported for advanced Heap, it will panics if called on a base heap.
 // The complexity is O(log n) where n = h.Len().
 func (h *Heap[T]) Remove(value T) bool {
 	if !h.advanced {
@@ -14,22 +14,19 @@ func (h *Heap[T]) Remove(value T) bool {
 }
 
 // Update re-establishes the heap ordering after the element has changed its value.
-// this method is only supported for advanced Heap, it will panics if called on a base heap.
-// Changing the value of the element x and then calling Fix is equivalent to,
-// but less expensive than, calling Remove(x) followed by a Push of the new value.
+// This method is only supported for advanced Heap, it will panics if called on a base heap.
+// Changing the value of the element value and then calling Update is equivalent to,
+// but less expensive than, calling Remove(value) followed by a Push of the new value.
 // The complexity is O(log n) where n = h.Len().
-func (h *Heap[T]) Update(x T) bool {
+func (h *Heap[T]) Update(value T) bool {
 	if !h.advanced {
 		panic("Update is not implemented for base heap")
 	}
-	if h.cnt[x] == 0 {
+	if h.cnt[value] == 0 {
 		return false
 	}
-	i := h.idx[x]
-	if !h.down(i, len(h.data)) {
-		h.up(i)
-	}
-	return true
+	i := h.idx[value]
+	return h.updateIndex(i)
 }
 
 func (h *Heap[T]) removeIndex(index int) bool {
@@ -59,5 +56,12 @@ func (h *Heap[T]) removeIndex(index int) bool {
 	}
 	h.size--
 	h.cnt[value]--
+	return true
+}
+
+func (h *Heap[T]) updateIndex(index int) bool {
+	if !h.down(index, len(h.data)) {
+		h.up(index)
+	}
 	return true
 }
