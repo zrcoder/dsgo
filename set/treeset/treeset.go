@@ -1,7 +1,3 @@
-// Copyright (c) 2015, Emir Pasic. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
 // Package treeset implements a tree backed by a red-black tree.
 //
 // Structure is not thread safe.
@@ -159,4 +155,59 @@ func (s *Set[T]) Difference(another *Set[T]) *Set[T] {
 	})
 
 	return res
+}
+
+// Inorer travels the tree in-order with a handler.
+func (s *Set[T]) Inorder(handler func(key T)) {
+	s.tree.Inorder(func(key T, _ set.Empty) {
+		handler(key)
+	})
+}
+
+// Min returns the minimum element from the tree set.
+// Returns 0-value, false if set is empty.
+func (m *Set[T]) Min() (element T, ok bool) {
+	if node := m.tree.Left(); node != nil {
+		return node.Key, true
+	}
+	return
+}
+
+// Max returns the maximum element from the tree set.
+// Returns 0-value, false if set is empty.
+func (m *Set[T]) Max() (element T, ok bool) {
+	if node := m.tree.Right(); node != nil {
+		return node.Key, true
+	}
+	return
+}
+
+// Floor finds the floor element for the input element.
+// In case that no floor is found, then o-value, false will be returned.
+//
+// Floor element is defined as the largest element that is smaller than or equal to the given element.
+// A floor element may not be found, either because the set is empty, or because
+// all elements in the set are larger than the given element.
+//
+// Element should adhere to the comparator's type assertion, otherwise method panics.
+func (m *Set[T]) Floor(element T) (foundElement T, ok bool) {
+	if node, ok := m.tree.Floor(element); ok {
+		return node.Key, true
+	}
+	return
+}
+
+// Ceiling finds the ceiling element for the input element.
+// In case that no ceiling is found, then 0-value, false will be returned.
+//
+// Ceiling element is defined as the smallest element that is larger than or equal to the given element.
+// A ceiling element may not be found, either because the set is empty, or because
+// all elements in the set are smaller than the given element.
+//
+// Element should adhere to the comparator's type assertion, otherwise method panics.
+func (m *Set[T]) Ceiling(element T) (foundElement T, ok bool) {
+	if node, ok := m.tree.Ceiling(element); ok {
+		return node.Key, true
+	}
+	return
 }

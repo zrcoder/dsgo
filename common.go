@@ -1,16 +1,8 @@
 package dsgo
 
-import "cmp"
-
 type Comparator[T any] func(a, b T) int
 
-func OrderedComparator[T cmp.Ordered]() Comparator[T] {
-	return func(a, b T) int {
-		return cmp.Compare(a, b)
-	}
-}
-
-func (cmp Comparator[T]) Reverse() Comparator[T] {
+func Reverse[T any](cmp Comparator[T]) Comparator[T] {
 	return func(a, b T) int {
 		return -cmp(a, b)
 	}

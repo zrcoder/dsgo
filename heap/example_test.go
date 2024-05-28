@@ -1,6 +1,7 @@
 package heap
 
 import (
+	"cmp"
 	"fmt"
 
 	"github.com/zrcoder/dsgo"
@@ -24,7 +25,7 @@ func Example_ints() {
 }
 
 func Example_withComparator() {
-	h := New(WithComparator(dsgo.OrderedComparator[int]().Reverse()))
+	h := New(WithComparator(dsgo.Reverse(cmp.Compare[int])))
 	h.Push(2)
 	h.Push(1)
 	h.Push(5)

@@ -156,6 +156,108 @@ func TestSetDifference(t *testing.T) {
 	}
 }
 
+func TestSetMin(t *testing.T) {
+	s := New[int]()
+
+	if k, ok := s.Min(); k != 0 || ok {
+		t.Errorf("Got %v->%v expected %v-%v", k, ok, 0, false)
+	}
+
+	s.Add(5)
+	s.Add(6)
+	s.Add(7)
+	s.Add(3)
+	s.Add(4)
+	s.Add(1)
+	s.Add(2)
+	s.Add(1) // overwrite
+
+	actualKey, actualOk := s.Min()
+	expectedKey, expectedOk := 1, true
+	if actualKey != expectedKey {
+		t.Errorf("Got %v expected %v", actualKey, expectedKey)
+	}
+	if actualOk != expectedOk {
+		t.Errorf("Got %v expected %v", actualOk, expectedOk)
+	}
+}
+
+func TestSetMax(t *testing.T) {
+	s := New[int]()
+
+	if k, ok := s.Max(); k != 0 || ok {
+		t.Errorf("Got %v->%v expected %v->%v", k, ok, 0, false)
+	}
+
+	s.Add(5)
+	s.Add(6)
+	s.Add(7)
+	s.Add(3)
+	s.Add(4)
+	s.Add(1)
+	s.Add(2)
+	s.Add(1) // overwrite
+
+	actualKey, actualOk := s.Max()
+	expectedKey, expectedOk := 7, true
+	if actualKey != expectedKey {
+		t.Errorf("Got %v expected %v", actualKey, expectedKey)
+	}
+	if actualOk != expectedOk {
+		t.Errorf("Got %v expected %v", actualOk, expectedOk)
+	}
+}
+
+func TestSetFloor(t *testing.T) {
+	s := New[int]()
+	s.Add(7)
+	s.Add(3)
+	s.Add(1)
+
+	tests1 := [][]any{
+		{-1, 0, false},
+		{0, 0, false},
+		{1, 1, true},
+		{2, 1, true},
+		{3, 3, true},
+		{4, 3, true},
+		{7, 7, true},
+		{8, 7, true},
+	}
+
+	for _, test := range tests1 {
+		actualKey, actualOk := s.Floor(test[0].(int))
+		if actualKey != test[1] || actualOk != test[2] {
+			t.Errorf("Got %v, %v, expected %v,  %v", actualKey, actualOk, test[1], test[2])
+		}
+	}
+}
+
+func TestSetCeiling(t *testing.T) {
+	s := New[int]()
+	s.Add(7)
+	s.Add(3)
+	s.Add(1)
+
+	tests1 := [][]any{
+		{-1, 1, true},
+		{0, 1, true},
+		{1, 1, true},
+		{2, 3, true},
+		{3, 3, true},
+		{4, 7, true},
+		{7, 7, true},
+		{8, 0, false},
+	}
+
+	for _, test := range tests1 {
+		actualKey, actualOk := s.Ceiling(test[0].(int))
+		if actualKey != test[1] || actualOk != test[2] {
+			t.Errorf("Got %v, %v, expected %v, %v", actualKey, actualOk, test[1], test[2])
+		}
+	}
+}
+
 func benchmarkContains(b *testing.B, set *Set[int], size int) {
 	for i := 0; i < b.N; i++ {
 		for n := 0; n < size; n++ {

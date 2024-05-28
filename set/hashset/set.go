@@ -1,5 +1,5 @@
 /*
-A set can store unique values, without any particular order.
+A hash set can store unique values, without any particular order.
 */
 package hashset
 

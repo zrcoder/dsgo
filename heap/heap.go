@@ -16,7 +16,7 @@ type Heap[T comparable] struct {
 }
 
 func New[T cmp.Ordered](ops ...Option[T]) *Heap[T] {
-	return NewWith[T](dsgo.OrderedComparator[T](), ops...)
+	return NewWith[T](cmp.Compare[T], ops...)
 }
 
 func NewWith[T comparable](cmp dsgo.Comparator[T], ops ...Option[T]) *Heap[T] {
