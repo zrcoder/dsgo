@@ -26,9 +26,10 @@ type Map[K comparable, V any] interface {
 	Remove(key K)
 }
 
-type BidMap[K comparable, V comparable] interface {
+type BidMap[K, V comparable] interface {
 	Map[K, V]
 	GetKey(value V) (key K, found bool)
+	RemoveValue(value V)
 }
 
 type Set[T comparable] interface {
