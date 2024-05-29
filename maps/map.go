@@ -4,9 +4,14 @@ import "github.com/zrcoder/dsgo"
 
 // Map interface that all maps implement
 type Map[K comparable, V any] interface {
+	Remove(key K)
+
+	Cache[K, V]
+}
+
+type Cache[K comparable, V any] interface {
 	Put(key K, value V)
 	Get(key K) (value V, found bool)
-	Remove(key K)
 	Keys() []K
 
 	dsgo.Container[V]
@@ -14,6 +19,12 @@ type Map[K comparable, V any] interface {
 	// Empty() bool
 	// Values() []T
 	// Clear()
+}
+
+// Pair holds a key-value item
+type Pair[K comparable, V any] struct {
+	Key   K
+	Value V
 }
 
 // BidiMap interface that all bidirectional maps implement (extends the Map interface)

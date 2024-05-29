@@ -15,32 +15,25 @@ import (
 	"github.com/zrcoder/dsgo/maps"
 )
 
-var _ maps.Map[string, int] = (*Map[string, int])(nil)
-
-type Pair[K comparable, V any] struct {
-	Key   K
-	Value V
-}
-
 // Map holds the elements in a regular hash table, and uses doubly-linked list to store key ordering.
 type Map[K comparable, V any] struct {
-	m    map[K]*list.Element[Pair[K, V]]
-	list *list.List[Pair[K, V]]
+	m    map[K]*list.Element[maps.Pair[K, V]]
+	list *list.List[maps.Pair[K, V]]
 }
 
 // New instantiates a linked-hash-map.
 func New[K comparable, V any]() *Map[K, V] {
 	return &Map[K, V]{
-		m:    make(map[K]*list.Element[Pair[K, V]]),
-		list: list.New[Pair[K, V]](),
+		m:    make(map[K]*list.Element[maps.Pair[K, V]]),
+		list: list.New[maps.Pair[K, V]](),
 	}
 }
 
 // Put inserts key-value pair into the map.
 // Key should adhere to the comparator's type assertion, otherwise method panics.
 func (m *Map[K, V]) Put(key K, value V) {
-	kv := Pair[K, V]{key, value}
-	if e, contains := m.m[key]; !contains {
+	kv := maps.Pair[K, V]{Key: key, Value: value}
+	if e, ok := m.m[key]; !ok {
 		e := m.list.PushBack(kv)
 		m.m[key] = e
 	} else {
@@ -61,7 +54,7 @@ func (m *Map[K, V]) Get(key K) (value V, found bool) {
 // Remove removes the element from the map by key.
 // Key should adhere to the comparator's type assertion, otherwise method panics.
 func (m *Map[K, V]) Remove(key K) {
-	if e, contains := m.m[key]; contains {
+	if e, ok := m.m[key]; ok {
 		delete(m.m, key)
 		m.list.Remove(e)
 	}

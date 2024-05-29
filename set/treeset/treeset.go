@@ -63,7 +63,7 @@ func (set *Set[T]) Remove(items ...T) {
 // Returns true if no arguments are passed at all, i.e. set is always superset of empty set.
 func (set *Set[T]) Contains(items ...T) bool {
 	for _, item := range items {
-		if _, contains := set.tree.Get(item); !contains {
+		if _, ok := set.tree.Get(item); !ok {
 			return false
 		}
 	}

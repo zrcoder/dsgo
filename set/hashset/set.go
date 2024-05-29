@@ -38,7 +38,7 @@ func (s *Set[T]) Remove(items ...T) {
 // Returns true if no arguments are passed at all, i.e. set is always superset of empty set.
 func (s *Set[T]) Contains(items ...T) bool {
 	for _, item := range items {
-		if _, contains := s.data[item]; !contains {
+		if _, ok := s.data[item]; !ok {
 			return false
 		}
 	}
