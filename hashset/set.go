@@ -3,39 +3,39 @@ A hash set can store unique values, without any particular order.
 */
 package hashset
 
-import "github.com/zrcoder/dsgo/set"
+import "github.com/zrcoder/dsgo"
 
 // Set holds elements in go's native map
 type Set[T comparable] struct {
-	data map[T]set.Empty
+	data map[T]dsgo.Empty
 }
 
 // New instantiates a new empty set and adds the passed values, if any, to the set
 func New[T comparable](values ...T) *Set[T] {
-	set := &Set[T]{data: make(map[T]set.Empty)}
+	set := &Set[T]{data: make(map[T]dsgo.Empty)}
 	if len(values) > 0 {
 		set.Add(values...)
 	}
 	return set
 }
 
-// Add adds the items (one or more) to the set.
+// Add adds the items (one or more) to the dsgo.
 func (s *Set[T]) Add(items ...T) {
 	for _, item := range items {
-		s.data[item] = set.EmptyHolder
+		s.data[item] = dsgo.EmptyHolder
 	}
 }
 
-// Remove removes the items (one or more) from the set.
+// Remove removes the items (one or more) from the dsgo.
 func (s *Set[T]) Remove(items ...T) {
 	for _, item := range items {
 		delete(s.data, item)
 	}
 }
 
-// Contains check if items (one or more) are present in the set.
+// Contains check if items (one or more) are present in the dsgo.
 // All items have to be present in the set for the method to return true.
-// Returns true if no arguments are passed at all, i.e. set is always superset of empty set.
+// Returns true if no arguments are passed at all, i.e. set is always superset of empty dsgo.
 func (s *Set[T]) Contains(items ...T) bool {
 	for _, item := range items {
 		if _, ok := s.data[item]; !ok {
@@ -45,25 +45,25 @@ func (s *Set[T]) Contains(items ...T) bool {
 	return true
 }
 
-// Len returns number of elements within the set.
-func (set *Set[T]) Len() int { return len(set.data) }
+// Len returns number of elements within the dsgo.
+func (s *Set[T]) Len() int { return len(s.data) }
 
 // Empty returns true if set does not contain any elements.
-func (set *Set[T]) Empty() bool { return set.Len() == 0 }
+func (s *Set[T]) Empty() bool { return s.Len() == 0 }
 
-// Values returns all items in the set.
-func (set *Set[T]) Values() []T {
-	values := make([]T, set.Len())
+// Values returns all items in the dsgo.
+func (s *Set[T]) Values() []T {
+	values := make([]T, s.Len())
 	count := 0
-	for item := range set.data {
+	for item := range s.data {
 		values[count] = item
 		count++
 	}
 	return values
 }
 
-// Clear clears all values in the set.
-func (set *Set[T]) Clear() { clear(set.data) }
+// Clear clears all values in the dsgo.
+func (s *Set[T]) Clear() { clear(s.data) }
 
 // Intersection returns the intersection between two sets.
 // The new set consists of all elements that are both in "set" and "another".

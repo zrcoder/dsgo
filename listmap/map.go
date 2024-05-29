@@ -11,28 +11,28 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/zrcoder/dsgo"
 	"github.com/zrcoder/dsgo/list"
-	"github.com/zrcoder/dsgo/maps"
 )
 
 // Map holds the elements in a regular hash table, and uses doubly-linked list to store key ordering.
 type Map[K comparable, V any] struct {
-	m    map[K]*list.Element[maps.Pair[K, V]]
-	list *list.List[maps.Pair[K, V]]
+	m    map[K]*list.Element[dsgo.Pair[K, V]]
+	list *list.List[dsgo.Pair[K, V]]
 }
 
 // New instantiates a linked-hash-map.
 func New[K comparable, V any]() *Map[K, V] {
 	return &Map[K, V]{
-		m:    make(map[K]*list.Element[maps.Pair[K, V]]),
-		list: list.New[maps.Pair[K, V]](),
+		m:    make(map[K]*list.Element[dsgo.Pair[K, V]]),
+		list: list.New[dsgo.Pair[K, V]](),
 	}
 }
 
 // Put inserts key-value pair into the map.
 // Key should adhere to the comparator's type assertion, otherwise method panics.
 func (m *Map[K, V]) Put(key K, value V) {
-	kv := maps.Pair[K, V]{Key: key, Value: value}
+	kv := dsgo.Pair[K, V]{Key: key, Value: value}
 	if e, ok := m.m[key]; !ok {
 		e := m.list.PushBack(kv)
 		m.m[key] = e

@@ -44,7 +44,11 @@ func (c *Cache[K, V]) Put(key K, value V) {
 	}
 
 	if len(c.keyElements) == c.size {
-		c.removeMinFreqElement()
+		// remove the min freq element
+		list := c.freqLists[c.minFreq]
+		key := list.Remove(list.Back()).Key
+		delete(c.keyElements, key)
+		// will update c.minFreq later
 	}
 
 	if c.freqLists[1] == nil {
@@ -53,15 +57,6 @@ func (c *Cache[K, V]) Put(key K, value V) {
 	item := Item[K, V]{Freq: 1, Value: value, Key: key}
 	c.keyElements[key] = c.freqLists[1].PushFront(item)
 	c.minFreq = 1
-}
-
-func (c *Cache[K, V]) removeMinFreqElement() {
-	list := c.freqLists[c.minFreq]
-	key := list.Remove(list.Back()).Key
-	delete(c.keyElements, key)
-	// no neet update c.minFreq here,
-	// because after call this function, c.minFreq will be set 1,
-	// see detail in Put
 }
 
 func (c *Cache[K, V]) increseFreq(element *list.Element[Item[K, V]]) {

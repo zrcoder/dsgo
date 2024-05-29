@@ -1,14 +1,14 @@
 package lrucache
 
 import (
+	"github.com/zrcoder/dsgo"
 	"github.com/zrcoder/dsgo/list"
-	"github.com/zrcoder/dsgo/maps"
 )
 
 type Cache[K comparable, V any] struct {
 	size int
-	m    map[K]*list.Element[maps.Pair[K, V]]
-	list *list.List[maps.Pair[K, V]]
+	m    map[K]*list.Element[dsgo.Pair[K, V]]
+	list *list.List[dsgo.Pair[K, V]]
 }
 
 func New[K comparable, V any](size int) *Cache[K, V] {
@@ -17,8 +17,8 @@ func New[K comparable, V any](size int) *Cache[K, V] {
 	}
 	return &Cache[K, V]{
 		size: size,
-		m:    make(map[K]*list.Element[maps.Pair[K, V]], size),
-		list: list.New[maps.Pair[K, V]](),
+		m:    make(map[K]*list.Element[dsgo.Pair[K, V]], size),
+		list: list.New[dsgo.Pair[K, V]](),
 	}
 }
 
@@ -40,7 +40,7 @@ func (c *Cache[K, V]) Put(key K, value V) {
 		pair := c.list.Remove(c.list.Back())
 		delete(c.m, pair.Key)
 	}
-	e := c.list.PushFront(maps.Pair[K, V]{Key: key, Value: value})
+	e := c.list.PushFront(dsgo.Pair[K, V]{Key: key, Value: value})
 	c.m[key] = e
 }
 

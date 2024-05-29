@@ -12,14 +12,13 @@ import (
 	"strings"
 
 	rbt "github.com/zrcoder/dsgo/redblacktree"
-	"github.com/zrcoder/dsgo/set"
 
 	"github.com/zrcoder/dsgo"
 )
 
 // Set holds elements in a red-black tree
 type Set[T comparable] struct {
-	tree *rbt.Tree[T, set.Empty]
+	tree *rbt.Tree[T, dsgo.Empty]
 }
 
 func New[T cmp.Ordered](values ...T) *Set[T] {
@@ -28,7 +27,7 @@ func New[T cmp.Ordered](values ...T) *Set[T] {
 
 // NewWith instantiates a new empty set with the custom comparator.
 func NewWith[T comparable](comparator dsgo.Comparator[T], values ...T) *Set[T] {
-	set := &Set[T]{tree: rbt.NewWith[T, set.Empty](comparator)}
+	set := &Set[T]{tree: rbt.NewWith[T, dsgo.Empty](comparator)}
 	set.Add(values...)
 	return set
 }
@@ -47,7 +46,7 @@ func (set *Set[T]) String() string {
 // Add adds the items (one or more) to the set.
 func (s *Set[T]) Add(items ...T) {
 	for _, item := range items {
-		s.tree.Put(item, set.EmptyHolder)
+		s.tree.Put(item, dsgo.EmptyHolder)
 	}
 }
 
@@ -99,7 +98,7 @@ func (s *Set[T]) Intersection(another *Set[T]) *Set[T] {
 	if s.Len() > another.Len() {
 		s, another = another, s
 	}
-	s.tree.Inorder(func(key T, _ set.Empty) {
+	s.tree.Inorder(func(key T, _ dsgo.Empty) {
 		if another.Contains(key) {
 			res.Add(key)
 		}
@@ -121,10 +120,10 @@ func (s *Set[T]) Union(another *Set[T]) *Set[T] {
 		return res
 	}
 
-	s.tree.Inorder(func(key T, _ set.Empty) {
+	s.tree.Inorder(func(key T, _ dsgo.Empty) {
 		res.Add(key)
 	})
-	another.tree.Inorder(func(key T, _ set.Empty) {
+	another.tree.Inorder(func(key T, _ dsgo.Empty) {
 		res.Add(key)
 	})
 
@@ -148,7 +147,7 @@ func (s *Set[T]) Difference(another *Set[T]) *Set[T] {
 	if s.Len() > another.Len() {
 		s, another = another, s
 	}
-	s.tree.Inorder(func(key T, _ set.Empty) {
+	s.tree.Inorder(func(key T, _ dsgo.Empty) {
 		if !another.Contains(key) {
 			res.Add(key)
 		}
@@ -159,7 +158,7 @@ func (s *Set[T]) Difference(another *Set[T]) *Set[T] {
 
 // Inorer travels the tree in-order with a handler.
 func (s *Set[T]) Inorder(handler func(key T)) {
-	s.tree.Inorder(func(key T, _ set.Empty) {
+	s.tree.Inorder(func(key T, _ dsgo.Empty) {
 		handler(key)
 	})
 }
