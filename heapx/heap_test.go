@@ -1,4 +1,4 @@
-package heap
+package heapx
 
 import (
 	"math/rand"
@@ -34,9 +34,7 @@ func TestBinaryHeapPush(t *testing.T) {
 func TestBinaryHeapPushBulk(t *testing.T) {
 	heap := New[int]()
 
-	for _, v := range []int{15, 20, 3, 1, 2} {
-		heap.Push(v)
-	}
+	heap.Push(15, 20, 3, 1, 2)
 
 	if actualValue, expectedValue := heap.Values(), []int{1, 2, 3, 15, 20}; !slices.Equal(actualValue, expectedValue) {
 		t.Errorf("Got %v expected %v", actualValue, expectedValue)

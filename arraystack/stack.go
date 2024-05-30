@@ -5,12 +5,12 @@ import (
 )
 
 // Stack holds elements in an array-list
-type Stack[T comparable] struct {
+type Stack[T any] struct {
 	data []T
 }
 
 // New instantiates a new empty stack
-func New[T comparable]() *Stack[T] {
+func New[T any]() *Stack[T] {
 	return &Stack[T]{}
 }
 

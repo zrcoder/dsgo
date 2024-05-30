@@ -18,6 +18,7 @@ func Test(t *testing.T) {
 }
 
 func test(t *testing.T, opers [][]any) {
+	t.Helper()
 	var cache *Cache[int, int]
 	for i, oper := range opers {
 		switch oper[0] {

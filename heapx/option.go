@@ -1,16 +1,16 @@
-package heap
+package heapx
 
 import "github.com/zrcoder/dsgo"
 
-type Option[T any] func(h *Heap[T])
+type Option[T comparable] func(h *Heap[T])
 
-func WithComparator[T any](cmp dsgo.Comparator[T]) Option[T] {
+func WithComparator[T comparable](cmp dsgo.Comparator[T]) Option[T] {
 	return func(h *Heap[T]) {
 		h.cmp = cmp
 	}
 }
 
-func WithCapacity[T any](capacity int) Option[T] {
+func WithCapacity[T comparable](capacity int) Option[T] {
 	return func(h *Heap[T]) {
 		if capacity <= len(h.data) {
 			h.data = h.data[:capacity:capacity]
@@ -26,7 +26,7 @@ func WithCapacity[T any](capacity int) Option[T] {
 	}
 }
 
-func WithData[T any, S ~[]T](data S) Option[T] {
+func WithData[T comparable, S ~[]T](data S) Option[T] {
 	return func(h *Heap[T]) {
 		if cap(h.data) < len(data) {
 			h.data = make([]T, len(data))
